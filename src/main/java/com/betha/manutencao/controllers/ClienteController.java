@@ -1,13 +1,15 @@
 package com.betha.manutencao.controllers;
 
 import com.betha.manutencao.domain.Cliente;
-import com.betha.manutencao.domain.dto.ClienteNovoDTO;
+import com.betha.manutencao.domain.dto.ClienteDTO;
+import com.betha.manutencao.domain.dto.ClienteUpdateDTO;
 import com.betha.manutencao.services.ClienteService;
 import com.betha.manutencao.services.utils.URIBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -27,9 +29,20 @@ public class ClienteController {
     }
 
     @PostMapping
-    public ResponseEntity<Cliente> add(@RequestBody ClienteNovoDTO clienteDTO) {
+    public ResponseEntity<Cliente> add(@RequestBody @Valid ClienteDTO clienteDTO) {
         Cliente cliente = clienteService.add(clienteDTO);
 
         return ResponseEntity.created(URIBuilder.buildLocation(cliente.getId())).body(cliente);
+    }
+
+    @PutMapping("/{id}")
+    public Cliente update(@PathVariable Integer id, @RequestBody @Valid ClienteUpdateDTO cliente) {
+        return clienteService.update(id, cliente);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+        clienteService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

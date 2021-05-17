@@ -19,6 +19,15 @@ public class CidadeService {
     @Autowired
     private EstadoService estadoService;
 
+    public Cidade findOne(Integer cidadeId) {
+        return cidadeRepository.findById(cidadeId)
+                .orElseThrow(() -> new ObjectNotFoundException("Cidade id " + cidadeId + " não encontrada"));
+    }
+
+    public List<Cidade> findByEstado(Integer estadoId) {
+        return cidadeRepository.findByEstadoId(estadoId);
+    }
+
     public Cidade add(Integer estadoId, Cidade cidade) {
         Estado estado = estadoService.findOne(estadoId);
 
@@ -30,14 +39,5 @@ public class CidadeService {
 
         estadoService.update(estadoId, estado);
         return cidade;
-    }
-
-    public Cidade findOne(Integer cidadeId) {
-        return cidadeRepository.findById(cidadeId)
-                .orElseThrow(() -> new ObjectNotFoundException("Cidade não encontrada"));
-    }
-
-    public List<Cidade> findByEstado(Integer estadoId) {
-        return cidadeRepository.findByEstadoId(estadoId);
     }
 }

@@ -3,6 +3,8 @@ package com.betha.manutencao.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
@@ -10,16 +12,23 @@ public class Endereco {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @NotEmpty
     private String endereco;
+    @NotEmpty
     private String numero;
     private String complemento;
+    @NotEmpty
     private String bairro;
+    @NotEmpty
     private String cep;
 
     @ManyToOne
     @JoinColumn(name = "cidade_id")
+    @NotNull
     private Cidade cidade;
 
+    @NotNull
     @JsonIgnore
     @OneToOne(mappedBy = "endereco")
     private Cliente cliente;

@@ -43,7 +43,7 @@ public class EstadoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer estadoId) {
+    public ResponseEntity<Void> delete(@PathVariable(name = "id") Integer estadoId) {
         estadoService.delete(estadoId);
         return ResponseEntity.noContent().build();
     }

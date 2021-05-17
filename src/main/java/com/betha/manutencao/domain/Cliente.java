@@ -1,9 +1,12 @@
 package com.betha.manutencao.domain;
 
 import com.betha.manutencao.domain.enums.TipoCliente;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -13,13 +16,23 @@ public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @NotEmpty
+    @Length(min = 5, max = 100)
     private String nome;
 
     @OneToOne
     @JoinColumn(name = "endereco_id")
+    @NotNull
     private Endereco endereco;
+    @Email
+    @NotEmpty
+    @Length(min = 5, max = 255)
     private String email;
+
+    @NotNull
     private Integer tipoCliente;
+    @NotEmpty
     private String cpf_cnpj;
 
     @ElementCollection(fetch = FetchType.EAGER)

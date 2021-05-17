@@ -1,14 +1,17 @@
 package com.betha.manutencao.services;
 
+import com.betha.manutencao.domain.Cidade;
 import com.betha.manutencao.domain.Cliente;
 import com.betha.manutencao.domain.Endereco;
-import com.betha.manutencao.domain.dto.ClienteNovoDTO;
+import com.betha.manutencao.domain.dto.ClienteDTO;
+import com.betha.manutencao.domain.dto.ClienteUpdateDTO;
 import com.betha.manutencao.domain.enums.TipoCliente;
 import com.betha.manutencao.repositories.ClienteRepository;
 import com.betha.manutencao.repositories.EnderecoRepository;
 import com.betha.manutencao.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -25,10 +28,12 @@ public class ClienteService {
     @Autowired
     private CidadeService cidadeService;
 
+    @Transactional(propagation = Propagation.SUPPORTS)
     public List<Cliente> findAll() {
         return clienteRepository.findAll();
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS)
     public Cliente findOne(Integer clienteId) {
         return clienteRepository.findById(clienteId)
                 .orElseThrow(() -> new ObjectNotFoundException("Cliente id " + clienteId + " não encontrado"));
@@ -39,16 +44,20 @@ public class ClienteService {
         return clienteRepository.save(cliente);
     }
 
-    public Cliente add(ClienteNovoDTO clienteNovoDTO) {
-        Cliente cliente = this.fromDTO(clienteNovoDTO);
+    public Cliente add(ClienteDTO clienteDTO) {
+        Cliente cliente = this.fromDTO(clienteDTO);
+
+        enderecoRepository.save(cliente.getEndereco());
 
         return clienteRepository.save(cliente);
     }
 
-    public Cliente update(Integer clienteId, Cliente cliente) {
-        this.findOne(clienteId);
+    public Cliente update(Integer clienteId, ClienteUpdateDTO clienteDTO) {
+        Cliente cliente = this.findOne(clienteId);
 
-        cliente.setId(clienteId);
+        this.updateClienteData(cliente, clienteDTO);
+        enderecoRepository.save(cliente.getEndereco());
+
         return clienteRepository.save(cliente);
     }
 
@@ -58,39 +67,43 @@ public class ClienteService {
         clienteRepository.delete(cliente);
     }
 
-    public Endereco updateEndereco(Integer clienteId, Endereco endereco) {
-        Cliente cliente = this.findOne(clienteId);
-
-        endereco.setCliente(cliente);
-        cliente.setEndereco(endereco);
-
-        clienteRepository.save(cliente);
-        return enderecoRepository.save(endereco);
-    }
-
-    public Cliente fromDTO(ClienteNovoDTO clienteNovoDTO) {
+    public Cliente fromDTO(ClienteDTO clienteDTO) {
         Endereco endereco = new Endereco();
 
-        endereco.setEndereco(clienteNovoDTO.getEndereco());
-        endereco.setNumero(clienteNovoDTO.getNumero());
-        endereco.setBairro(clienteNovoDTO.getBairro());
-        endereco.setComplemento(clienteNovoDTO.getComplemento());
-        endereco.setCep(clienteNovoDTO.getCep());
-        endereco.setCidade(cidadeService.findOne(clienteNovoDTO.getCidadeId()));
+        endereco.setEndereco(clienteDTO.getEndereco());
+        endereco.setNumero(clienteDTO.getNumero());
+        endereco.setBairro(clienteDTO.getBairro());
+        endereco.setComplemento(clienteDTO.getComplemento());
+        endereco.setCep(clienteDTO.getCep());
+        endereco.setCidade(cidadeService.findOne(clienteDTO.getCidadeId()));
 
         Cliente cliente = new Cliente();
         endereco.setCliente(cliente);
 
-        cliente.setTipoCliente(TipoCliente.toEnum(clienteNovoDTO.getTipo()));
-        cliente.setNome(clienteNovoDTO.getNome());
-        cliente.setCpf_cnpj(clienteNovoDTO.getCpf_cnpj());
-        cliente.setEmail(clienteNovoDTO.getEmail());
+        cliente.setTipoCliente(TipoCliente.toEnum(clienteDTO.getTipoCliente()));
+        cliente.setNome(clienteDTO.getNome());
+        cliente.setCpf_cnpj(clienteDTO.getCpf_cnpj());
+        cliente.setEmail(clienteDTO.getEmail());
         cliente.setEndereco(endereco);
-        cliente.setTelefones(clienteNovoDTO.getTelefones());
+        cliente.setTelefones(clienteDTO.getTelefones());
         cliente.setId(null);
 
-        enderecoRepository.save(endereco);
-        return clienteRepository.save(cliente);
+        return cliente;
     }
 
+    public void updateClienteData(Cliente cliente, ClienteUpdateDTO clienteUpdate) {
+        cliente.setNome(clienteUpdate.getNome());
+        cliente.setEmail(clienteUpdate.getEmail());
+        cliente.setTelefones(clienteUpdate.getTelefones());
+
+        Endereco endereco = cliente.getEndereco();
+        endereco.setEndereco(clienteUpdate.getEndereco());
+        endereco.setNumero(clienteUpdate.getNumero());
+        endereco.setComplemento(clienteUpdate.getComplemento());
+        endereco.setBairro(clienteUpdate.getBairro());
+        endereco.setCep(clienteUpdate.getCep());
+
+        Cidade cidade = cidadeService.findOne(clienteUpdate.getCidadeId());
+        endereco.setCidade(cidade);
+    }
 }

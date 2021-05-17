@@ -1,29 +1,28 @@
 package com.betha.manutencao.domain.dto;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ClienteNovoDTO {
+public class ClienteUpdateDTO {
     @NotEmpty
+    @Length(min = 5, max = 100)
     private String nome;
 
     @Email
     @NotEmpty
+    @Length(min = 5, max = 255)
     private String email;
-
-    @NotNull
-    private Integer tipo;
-
-    @NotEmpty
-    private String cpf_cnpj;
 
     @NotNull
     private Set<String> telefones = new HashSet<>();
 
     @NotEmpty
+    @Length(min = 10, max = 255)
     private String endereco;
     @NotEmpty
     private String numero;
@@ -31,21 +30,19 @@ public class ClienteNovoDTO {
     @NotEmpty
     private String bairro;
     @NotEmpty
+    @Length(min = 5, max = 15)
     private String cep;
 
     @NotNull
     private Integer cidadeId;
 
-    public ClienteNovoDTO() {
+    public ClienteUpdateDTO() {
     }
 
-    public ClienteNovoDTO(String nome, String email, Integer tipo, String cpf_cnpj, Set<String> telefones,
-                          String endereco, String numero, String complemento, String bairro, String cep,
-                          Integer cidadeId) {
+    public ClienteUpdateDTO(String nome, String email, Set<String> telefones, String endereco,
+                            String numero, String complemento, String bairro, String cep, Integer cidadeId) {
         this.nome = nome;
         this.email = email;
-        this.tipo = tipo;
-        this.cpf_cnpj = cpf_cnpj;
         this.telefones = telefones;
         this.endereco = endereco;
         this.numero = numero;
@@ -69,22 +66,6 @@ public class ClienteNovoDTO {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public Integer getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(Integer tipo) {
-        this.tipo = tipo;
-    }
-
-    public String getCpf_cnpj() {
-        return cpf_cnpj;
-    }
-
-    public void setCpf_cnpj(String cpf_cnpj) {
-        this.cpf_cnpj = cpf_cnpj;
     }
 
     public Set<String> getTelefones() {
