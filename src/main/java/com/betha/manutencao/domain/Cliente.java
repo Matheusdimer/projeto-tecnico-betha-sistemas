@@ -1,15 +1,14 @@
 package com.betha.manutencao.domain;
 
 import com.betha.manutencao.domain.enums.TipoCliente;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Cliente {
@@ -31,13 +30,18 @@ public class Cliente {
     private String email;
 
     @NotNull
-    private Integer tipoCliente;
+    @Enumerated(value = EnumType.ORDINAL)
+    private TipoCliente tipoCliente;
     @NotEmpty
     private String cpf_cnpj;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "telefones")
     private Set<String> telefones = new HashSet<>();
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "cliente")
+    private List<OrdemServico> ordens = new ArrayList<>();
 
     public Cliente() {
     }
@@ -46,7 +50,7 @@ public class Cliente {
         this.nome = nome;
         this.endereco = endereco;
         this.email = email;
-        this.tipoCliente = tipoCliente.getCodigo();
+        this.tipoCliente = tipoCliente;
         this.cpf_cnpj = cpf_cnpj;
     }
 
@@ -83,11 +87,11 @@ public class Cliente {
     }
 
     public TipoCliente getTipoCliente() {
-        return TipoCliente.toEnum(this.tipoCliente);
+        return tipoCliente;
     }
 
     public void setTipoCliente(TipoCliente tipoCliente) {
-        this.tipoCliente = tipoCliente.getCodigo();
+        this.tipoCliente = tipoCliente;
     }
 
     public String getCpf_cnpj() {
@@ -104,6 +108,14 @@ public class Cliente {
 
     public void setTelefones(Set<String> telefones) {
         this.telefones = telefones;
+    }
+
+    public List<OrdemServico> getOrdens() {
+        return ordens;
+    }
+
+    public void setOrdens(List<OrdemServico> ordens) {
+        this.ordens = ordens;
     }
 
     @Override
