@@ -1,13 +1,13 @@
 package com.betha.manutencao.services;
 
-import com.betha.manutencao.domain.Cidade;
-import com.betha.manutencao.domain.Cliente;
-import com.betha.manutencao.domain.Endereco;
+import com.betha.manutencao.domain.*;
 import com.betha.manutencao.domain.dto.ClienteDTO;
 import com.betha.manutencao.domain.dto.ClienteUpdateDTO;
 import com.betha.manutencao.domain.enums.TipoCliente;
 import com.betha.manutencao.repositories.ClienteRepository;
 import com.betha.manutencao.repositories.EnderecoRepository;
+import com.betha.manutencao.repositories.EquipamentoRepository;
+import com.betha.manutencao.repositories.OrdemServicoRepository;
 import com.betha.manutencao.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +28,12 @@ public class ClienteService {
     @Autowired
     private CidadeService cidadeService;
 
+    @Autowired
+    private OrdemServicoRepository ordemRepository;
+
+    @Autowired
+    private EquipamentoRepository equipamentoRepository;
+
     @Transactional(propagation = Propagation.SUPPORTS)
     public List<Cliente> findAll() {
         return clienteRepository.findAll();
@@ -37,6 +43,16 @@ public class ClienteService {
     public Cliente findOne(Integer clienteId) {
         return clienteRepository.findById(clienteId)
                 .orElseThrow(() -> new ObjectNotFoundException("Cliente id " + clienteId + " não encontrado"));
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<OrdemServico> findOrdens(Integer clienteId) {
+        return ordemRepository.findAllByClienteId(clienteId);
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Equipamento> findEquipamentos(Integer clienteId) {
+        return this.findOne(clienteId).getEquipamentos();
     }
 
     public Cliente add(Cliente cliente) {
@@ -49,6 +65,22 @@ public class ClienteService {
 
         enderecoRepository.save(cliente.getEndereco());
 
+        return clienteRepository.save(cliente);
+    }
+
+    public Equipamento addEquipamento(Integer clienteId, Equipamento equipamento) {
+        Cliente cliente = this.findOne(clienteId);
+
+        equipamento.setId(null);
+        equipamento.setCliente(cliente);
+        cliente.getEquipamentos().add(equipamento);
+
+        this.update(cliente);
+
+        return equipamentoRepository.save(equipamento);
+    }
+
+    public Cliente update(Cliente cliente) {
         return clienteRepository.save(cliente);
     }
 
