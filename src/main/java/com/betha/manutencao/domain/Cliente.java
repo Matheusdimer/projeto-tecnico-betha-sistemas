@@ -32,6 +32,7 @@ public class Cliente {
     @NotNull
     @Enumerated(value = EnumType.ORDINAL)
     private TipoCliente tipoCliente;
+
     @NotEmpty
     private String cpf_cnpj;
 
@@ -42,6 +43,9 @@ public class Cliente {
     @JsonManagedReference
     @OneToMany(mappedBy = "cliente")
     private List<OrdemServico> ordens = new ArrayList<>();
+
+    @OneToMany(mappedBy = "cliente")
+    private List<Equipamento> equipamentos = new ArrayList<>();
 
     public Cliente() {
     }
@@ -116,6 +120,14 @@ public class Cliente {
 
     public void setOrdens(List<OrdemServico> ordens) {
         this.ordens = ordens;
+    }
+
+    public List<Equipamento> getEquipamentos() {
+        return equipamentos;
+    }
+
+    public void setEquipamentos(List<Equipamento> equipamentos) {
+        this.equipamentos = equipamentos;
     }
 
     @Override

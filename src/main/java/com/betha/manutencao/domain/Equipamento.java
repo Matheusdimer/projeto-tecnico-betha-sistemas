@@ -1,6 +1,7 @@
 package com.betha.manutencao.domain;
 
 import com.betha.manutencao.domain.enums.TipoEquipamento;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -12,11 +13,13 @@ public class Equipamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @JsonIgnore
     @NotNull
     @ManyToOne
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
 
+    @NotNull
     @Enumerated(value = EnumType.ORDINAL)
     private TipoEquipamento tipoEquipamento;
     private String marca;

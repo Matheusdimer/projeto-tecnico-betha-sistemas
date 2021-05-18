@@ -23,7 +23,7 @@ public class OrdemServico {
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
 
-    @OneToMany(mappedBy = "ordem")
+    @OneToMany(mappedBy = "ordem", cascade = CascadeType.ALL)
     private List<ItemOrdemServico> itens = new ArrayList<>();
 
     @Enumerated(value = EnumType.ORDINAL)

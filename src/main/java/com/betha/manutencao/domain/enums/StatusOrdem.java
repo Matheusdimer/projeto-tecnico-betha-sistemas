@@ -1,7 +1,9 @@
 package com.betha.manutencao.domain.enums;
 
 public enum StatusOrdem {
-    ABERTA(1, "Aberta"), FINALIZADA(2, "Finalizada");
+    ABERTA(1, "Aberta"),
+    FINALIZADA(2, "Finalizada"),
+    INATIVADA(3, "Inativada");
 
     private Integer codigo;
     private String descricao;
