@@ -102,17 +102,9 @@ public class OrdemServicoService {
     }
 
     public Avaria addAvaria(Integer ordemId, Integer itemOrdemId, Avaria avaria) {
-        ItemOrdemServico itemOrdemServico = null;
-
-        for (ItemOrdemServico item : this.findItens(ordemId)) {
-            if (item.getOrdem().getId().equals(itemOrdemId)) {
-                itemOrdemServico = item;
-            }
-        }
-
-        if (itemOrdemServico == null) {
-            throw new ObjectNotFoundException("Item relacionado a ordem " + ordemId + " não encontrado");
-        }
+        ItemOrdemServico itemOrdemServico = ordemRepository.findItemInOrdemById(ordemId, itemOrdemId)
+                .orElseThrow(() ->
+                        new ObjectNotFoundException("Item relacionado a ordem " + ordemId + " não encontrado"));
 
         avaria.setEquipamento(itemOrdemServico.getEquipamento());
         avaria.setItemOrdemServico(itemOrdemServico);
