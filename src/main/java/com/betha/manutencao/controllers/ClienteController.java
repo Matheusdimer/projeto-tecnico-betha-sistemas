@@ -1,6 +1,8 @@
 package com.betha.manutencao.controllers;
 
 import com.betha.manutencao.domain.Cliente;
+import com.betha.manutencao.domain.Equipamento;
+import com.betha.manutencao.domain.OrdemServico;
 import com.betha.manutencao.domain.dto.ClienteDTO;
 import com.betha.manutencao.domain.dto.ClienteUpdateDTO;
 import com.betha.manutencao.services.ClienteService;
@@ -28,12 +30,31 @@ public class ClienteController {
         return  clienteService.findOne(id);
     }
 
+    @GetMapping("/{id}/ordens")
+    public List<OrdemServico> findOrdensCliente(@PathVariable Integer id) {
+        return clienteService.findOrdens(id);
+    }
+
+    @GetMapping("/{id}/equipamentos")
+    public List<Equipamento> findEquipamentosCliente(@PathVariable Integer id) {
+        return clienteService.findEquipamentos(id);
+    }
+
     @PostMapping
     public ResponseEntity<Cliente> add(@RequestBody @Valid ClienteDTO clienteDTO) {
         Cliente cliente = clienteService.add(clienteDTO);
 
         return ResponseEntity.created(URIBuilder.buildLocation(cliente.getId())).body(cliente);
     }
+
+    @PostMapping("{id}/equipamentos")
+    public ResponseEntity<Equipamento> addEquipamento(@PathVariable Integer id,
+                                                      @RequestBody Equipamento equipamento) {
+        Equipamento equipamentoSalvo = clienteService.addEquipamento(id, equipamento);
+
+        return ResponseEntity.created(URIBuilder.buildLocation(equipamentoSalvo.getId())).body(equipamentoSalvo);
+    }
+
 
     @PutMapping("/{id}")
     public Cliente update(@PathVariable Integer id, @RequestBody @Valid ClienteUpdateDTO cliente) {
