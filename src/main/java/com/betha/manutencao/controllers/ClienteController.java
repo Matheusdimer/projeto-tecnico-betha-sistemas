@@ -6,6 +6,7 @@ import com.betha.manutencao.domain.OrdemServico;
 import com.betha.manutencao.domain.dto.ClienteDTO;
 import com.betha.manutencao.domain.dto.ClienteUpdateDTO;
 import com.betha.manutencao.services.ClienteService;
+import com.betha.manutencao.services.EquipamentoService;
 import com.betha.manutencao.services.utils.URIBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,9 @@ import java.util.List;
 public class ClienteController {
     @Autowired
     private ClienteService clienteService;
+
+    @Autowired
+    private EquipamentoService equipamentoService;
 
     @GetMapping
     public List<Cliente> findAll() {
@@ -47,12 +51,19 @@ public class ClienteController {
         return ResponseEntity.created(URIBuilder.buildLocation(cliente.getId())).body(cliente);
     }
 
-    @PostMapping("{id}/equipamentos")
-    public ResponseEntity<Equipamento> addEquipamento(@PathVariable Integer id,
+    @PostMapping("{clienteId}/equipamentos")
+    public ResponseEntity<Equipamento> addEquipamento(@PathVariable Integer clienteId,
                                                       @RequestBody Equipamento equipamento) {
-        Equipamento equipamentoSalvo = clienteService.addEquipamento(id, equipamento);
+        Equipamento equipamentoSalvo = equipamentoService.add(clienteId, equipamento);
 
         return ResponseEntity.created(URIBuilder.buildLocation(equipamentoSalvo.getId())).body(equipamentoSalvo);
+    }
+
+    @DeleteMapping("{clienteId}/equipamentos/{equipamentoId}")
+    public ResponseEntity<Void> deleteEquipamento(@PathVariable Integer clienteId, @PathVariable Integer equipamentoId) {
+        equipamentoService.delete(clienteId, equipamentoId);
+
+        return ResponseEntity.noContent().build();
     }
 
 
