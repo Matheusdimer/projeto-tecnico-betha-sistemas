@@ -3,9 +3,11 @@ package com.betha.manutencao.controllers;
 import com.betha.manutencao.domain.Avaria;
 import com.betha.manutencao.domain.ItemOrdemServico;
 import com.betha.manutencao.domain.OrdemServico;
+import com.betha.manutencao.domain.dto.OrdemStatusDTO;
 import com.betha.manutencao.services.OrdemServicoService;
 import com.betha.manutencao.services.utils.URIBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +42,11 @@ public class OrdemServicoController {
         return ordemService.update(id, ordemServico);
     }
 
+    @PutMapping("/{id}/status")
+    public OrdemServico updateStatus(@PathVariable Integer id, @RequestBody OrdemStatusDTO ordemStatusDTO) {
+        return ordemService.updateStatus(id, ordemStatusDTO.getStatusOrdem(), ordemStatusDTO.getObservacoes());
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         ordemService.delete(id);
@@ -57,6 +64,6 @@ public class OrdemServicoController {
                                             @PathVariable Integer itemId, @RequestBody Avaria avaria) {
         Avaria avariaSalva = ordemService.addAvaria(ordemId, itemId, avaria);
 
-        return ResponseEntity.created(URIBuilder.buildLocation(avariaSalva.getId())).body(avariaSalva);
+        return ResponseEntity.status(HttpStatus.CREATED).body(avariaSalva);
     }
 }

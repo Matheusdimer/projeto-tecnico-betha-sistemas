@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -50,9 +52,10 @@ public class OrdemServicoService {
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
-    public ItemOrdemServico findOneItem(Integer id) {
-        return itemRepository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException("Item id " + id + " não encontrado"));
+    public ItemOrdemServico findOneItem(Integer ordemId, Integer itemId) {
+        return ordemRepository.findItemInOrdemById(ordemId, itemId)
+                .orElseThrow(() ->
+                        new ObjectNotFoundException("Item relacionado a ordem " + ordemId + " não encontrado"));
     }
 
     public OrdemServico add(OrdemServico ordemServico) {
@@ -68,7 +71,10 @@ public class OrdemServicoService {
                             + item.getEquipamento().getId() + " não encontrado"));
 
             item.setEquipamento(equipamento);
+            item.setAvarias(Collections.emptyList());
             item.setOrdem(ordemServico);
+
+            equipamento.getItensOrdem().add(item);
         }
 
         OrdemServico ordemSalva = ordemRepository.save(ordemServico);
@@ -81,6 +87,21 @@ public class OrdemServicoService {
         this.findOne(ordemId);
 
         ordemServico.setId(ordemId);
+
+        return ordemRepository.save(ordemServico);
+    }
+
+    public OrdemServico updateStatus(Integer ordemId, StatusOrdem statusOrdem, String obs) {
+        OrdemServico ordemServico = this.findOne(ordemId);
+
+        ordemServico.setStatusOrdem(statusOrdem);
+        ordemServico.setObservacoes(obs);
+
+        if (!(statusOrdem == StatusOrdem.ABERTA)) {
+            ordemServico.setDataEncerramento(LocalDate.now());
+        } else {
+            ordemServico.setDataEncerramento(null);
+        }
 
         return ordemRepository.save(ordemServico);
     }
@@ -102,9 +123,7 @@ public class OrdemServicoService {
     }
 
     public Avaria addAvaria(Integer ordemId, Integer itemOrdemId, Avaria avaria) {
-        ItemOrdemServico itemOrdemServico = ordemRepository.findItemInOrdemById(ordemId, itemOrdemId)
-                .orElseThrow(() ->
-                        new ObjectNotFoundException("Item relacionado a ordem " + ordemId + " não encontrado"));
+        ItemOrdemServico itemOrdemServico = this.findOneItem(ordemId, itemOrdemId);
 
         avaria.setEquipamento(itemOrdemServico.getEquipamento());
         avaria.setItemOrdemServico(itemOrdemServico);
