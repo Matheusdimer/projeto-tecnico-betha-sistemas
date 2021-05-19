@@ -3,6 +3,7 @@ package com.betha.manutencao.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -18,9 +19,12 @@ public class ItemOrdemServico {
     @JoinColumn(name = "ordem_id")
     private OrdemServico ordem;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "equipamento_id")
     private Equipamento equipamento;
+
+    @NotEmpty
+    private String problema;
 
     @OneToMany(mappedBy = "itemOrdemServico")
     private List<Avaria> avarias = new ArrayList<>();
@@ -28,9 +32,10 @@ public class ItemOrdemServico {
     public ItemOrdemServico() {
     }
 
-    public ItemOrdemServico(OrdemServico ordem, Equipamento equipamento) {
+    public ItemOrdemServico(OrdemServico ordem, Equipamento equipamento, String problema) {
         this.ordem = ordem;
         this.equipamento = equipamento;
+        this.problema = problema;
     }
 
     public Integer getId() {
@@ -63,6 +68,23 @@ public class ItemOrdemServico {
 
     public void setAvarias(List<Avaria> avarias) {
         this.avarias = avarias;
+    }
+
+    public String getProblema() {
+        return problema;
+    }
+
+    public void setProblema(String problema) {
+        this.problema = problema;
+    }
+
+    public Double getSubtotal() {
+        Double soma = 0.00;
+        for (Avaria item : this.getAvarias()) {
+            soma += item.getCustoReparo();
+        }
+
+        return soma;
     }
 
     @Override

@@ -18,7 +18,6 @@ public class OrdemServico {
     private Integer id;
 
     @NotNull
-    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
@@ -26,7 +25,7 @@ public class OrdemServico {
     @OneToMany(mappedBy = "ordem", cascade = CascadeType.ALL)
     private List<ItemOrdemServico> itens = new ArrayList<>();
 
-    @Enumerated(value = EnumType.ORDINAL)
+    @Enumerated(value = EnumType.STRING)
     private StatusOrdem statusOrdem = StatusOrdem.ABERTA;
 
     private LocalDate dataInclusao = LocalDate.now();
@@ -97,6 +96,16 @@ public class OrdemServico {
 
     public void setObservacoes(String observacoes) {
         this.observacoes = observacoes;
+    }
+
+    public Double getCustoTotal() {
+        Double soma = 0.00;
+
+        for (ItemOrdemServico item : this.getItens()) {
+            soma += item.getSubtotal();
+        }
+
+        return soma;
     }
 
     @Override
