@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
@@ -26,14 +27,19 @@ public class Avaria {
     private String descricao;
     private String imagemUrl;
 
+    @NotNull
+    private Double custoReparo;
+
     public Avaria() {
     }
 
-    public Avaria(ItemOrdemServico itemOrdemServico, Equipamento equipamento, String descricao, String imagemUrl) {
+    public Avaria(ItemOrdemServico itemOrdemServico, Equipamento equipamento,
+                  String descricao, String imagemUrl, Double custoReparo) {
         this.itemOrdemServico = itemOrdemServico;
         this.equipamento = equipamento;
         this.descricao = descricao;
         this.imagemUrl = imagemUrl;
+        this.custoReparo = custoReparo;
     }
 
     public Integer getId() {
@@ -74,6 +80,14 @@ public class Avaria {
 
     public void setImagemUrl(String imagemUrl) {
         this.imagemUrl = imagemUrl;
+    }
+
+    public Double getCustoReparo() {
+        return custoReparo;
+    }
+
+    public void setCustoReparo(Double custoReparo) {
+        this.custoReparo = custoReparo;
     }
 
     @Override
