@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -20,10 +21,14 @@ public class Equipamento {
     private Cliente cliente;
 
     @NotNull
-    @Enumerated(value = EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private TipoEquipamento tipoEquipamento;
     private String marca;
     private String modelo;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "equipamento")
+    List<ItemOrdemServico> itensOrdem;
 
     public Equipamento() {
     }
@@ -73,6 +78,14 @@ public class Equipamento {
 
     public void setModelo(String modelo) {
         this.modelo = modelo;
+    }
+
+    public List<ItemOrdemServico> getItensOrdem() {
+        return itensOrdem;
+    }
+
+    public void setItensOrdem(List<ItemOrdemServico> itensOrdem) {
+        this.itensOrdem = itensOrdem;
     }
 
     @Override

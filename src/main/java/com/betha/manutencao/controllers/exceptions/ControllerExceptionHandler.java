@@ -36,7 +36,7 @@ public class ControllerExceptionHandler {
         ValidationError error = new ValidationError(
                 HttpStatus.UNPROCESSABLE_ENTITY.value(),
                 "Erro de validação",
-                e.getMessage(),
+                "Ocorreram erros em um ou mais campos",
                 request.getRequestURI()
         );
 

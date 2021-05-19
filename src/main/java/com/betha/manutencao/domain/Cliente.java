@@ -1,7 +1,7 @@
 package com.betha.manutencao.domain;
 
 import com.betha.manutencao.domain.enums.TipoCliente;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -40,10 +40,11 @@ public class Cliente {
     @CollectionTable(name = "telefones")
     private Set<String> telefones = new HashSet<>();
 
-    @JsonManagedReference
+    @JsonIgnore
     @OneToMany(mappedBy = "cliente")
     private List<OrdemServico> ordens = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "cliente")
     private List<Equipamento> equipamentos = new ArrayList<>();
 
