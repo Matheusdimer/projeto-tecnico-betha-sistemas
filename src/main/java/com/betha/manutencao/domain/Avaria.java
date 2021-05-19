@@ -25,7 +25,6 @@ public class Avaria {
 
     @NotEmpty
     private String descricao;
-    private String imagemUrl;
 
     @NotNull
     private Double custoReparo;
@@ -33,12 +32,10 @@ public class Avaria {
     public Avaria() {
     }
 
-    public Avaria(ItemOrdemServico itemOrdemServico, Equipamento equipamento,
-                  String descricao, String imagemUrl, Double custoReparo) {
+    public Avaria(ItemOrdemServico itemOrdemServico, Equipamento equipamento, String descricao, Double custoReparo) {
         this.itemOrdemServico = itemOrdemServico;
         this.equipamento = equipamento;
         this.descricao = descricao;
-        this.imagemUrl = imagemUrl;
         this.custoReparo = custoReparo;
     }
 
@@ -72,14 +69,6 @@ public class Avaria {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
-    }
-
-    public String getImagemUrl() {
-        return imagemUrl;
-    }
-
-    public void setImagemUrl(String imagemUrl) {
-        this.imagemUrl = imagemUrl;
     }
 
     public Double getCustoReparo() {
