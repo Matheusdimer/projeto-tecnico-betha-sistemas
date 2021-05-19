@@ -31,9 +31,6 @@ public class ClienteService {
     @Autowired
     private OrdemServicoRepository ordemRepository;
 
-    @Autowired
-    private EquipamentoRepository equipamentoRepository;
-
     @Transactional(propagation = Propagation.SUPPORTS)
     public List<Cliente> findAll() {
         return clienteRepository.findAll();
@@ -66,18 +63,6 @@ public class ClienteService {
         enderecoRepository.save(cliente.getEndereco());
 
         return clienteRepository.save(cliente);
-    }
-
-    public Equipamento addEquipamento(Integer clienteId, Equipamento equipamento) {
-        Cliente cliente = this.findOne(clienteId);
-
-        equipamento.setId(null);
-        equipamento.setCliente(cliente);
-        cliente.getEquipamentos().add(equipamento);
-
-        this.update(cliente);
-
-        return equipamentoRepository.save(equipamento);
     }
 
     public Cliente update(Cliente cliente) {
