@@ -1,6 +1,7 @@
 package com.betha.manutencao.controllers;
 
 import com.betha.manutencao.domain.Funcionario;
+import com.betha.manutencao.domain.dto.AlterarSenhaDTO;
 import com.betha.manutencao.domain.dto.FuncionarioDTO;
 import com.betha.manutencao.services.FuncionarioService;
 import com.betha.manutencao.services.utils.URIBuilder;
@@ -37,9 +38,10 @@ public class FuncionarioController {
                 .body(new FuncionarioDTO(funcionarioSalvo));
     }
 
-    @PutMapping("/{id}")
-    public FuncionarioDTO update(@PathVariable Integer id, @RequestBody Funcionario funcionario) {
-        return new FuncionarioDTO(funcionarioService.update(id, funcionario));
+    @PutMapping("/{id}/senha")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ATENDENTE', 'TECNICO')")
+    public FuncionarioDTO updateSenha(@PathVariable Integer id, @RequestBody AlterarSenhaDTO alterarSenhaDTO) {
+        return new FuncionarioDTO(funcionarioService.updateSenha(id, alterarSenhaDTO));
     }
 
     @DeleteMapping("/{id}")

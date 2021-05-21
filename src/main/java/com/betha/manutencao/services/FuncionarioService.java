@@ -1,8 +1,11 @@
 package com.betha.manutencao.services;
 
 import com.betha.manutencao.domain.Funcionario;
+import com.betha.manutencao.domain.dto.AlterarSenhaDTO;
 import com.betha.manutencao.domain.enums.TipoFuncionario;
 import com.betha.manutencao.repositories.FuncionarioRepository;
+import com.betha.manutencao.services.exceptions.AuthorizationException;
+import com.betha.manutencao.services.exceptions.CredentialsException;
 import com.betha.manutencao.services.exceptions.DataIntegrityException;
 import com.betha.manutencao.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +53,27 @@ public class FuncionarioService {
         funcionario.setId(id);
 
         return funcionarioRepository.save(funcionario);
+    }
+
+    public Funcionario update(Funcionario funcionario) {
+        return funcionarioRepository.save(funcionario);
+    }
+
+    public Funcionario updateSenha(Integer funcionarioId, AlterarSenhaDTO alterarSenhaDTO) {
+        String userAuthenticated = UserService.authenticated();
+        Funcionario funcionario = this.findOne(funcionarioId);
+
+        if (userAuthenticated == null || !userAuthenticated.equals(funcionario.getUsername())) {
+            throw new AuthorizationException("Acesso negado");
+        }
+
+        if (!bCrypt.matches(alterarSenhaDTO.getSenhaAtual(), funcionario.getSenha())) {
+            throw new CredentialsException("Senha atual inválida");
+        }
+
+        funcionario.setSenha(bCrypt.encode(alterarSenhaDTO.getNovaSenha()));
+
+        return this.update(funcionario);
     }
 
     public void delete(Integer id) {
