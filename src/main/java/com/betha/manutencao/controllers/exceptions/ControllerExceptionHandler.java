@@ -1,5 +1,7 @@
 package com.betha.manutencao.controllers.exceptions;
 
+import com.betha.manutencao.services.exceptions.AuthorizationException;
+import com.betha.manutencao.services.exceptions.CredentialsException;
 import com.betha.manutencao.services.exceptions.DataIntegrityException;
 import com.betha.manutencao.services.exceptions.ObjectNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -69,5 +71,29 @@ public class ControllerExceptionHandler {
         );
 
         return ResponseEntity.badRequest().body(error);
+    }
+
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity<StandardError> authorizationError(AuthorizationException e, HttpServletRequest request) {
+        StandardError error = new StandardError(
+                HttpStatus.FORBIDDEN.value(),
+                "Erro de autorização",
+                e.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
+
+    @ExceptionHandler(CredentialsException.class)
+    public ResponseEntity<StandardError> credentialsError(CredentialsException e, HttpServletRequest request) {
+        StandardError error = new StandardError(
+                HttpStatus.BAD_REQUEST.value(),
+                "Erro de credenciais",
+                e.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 }
