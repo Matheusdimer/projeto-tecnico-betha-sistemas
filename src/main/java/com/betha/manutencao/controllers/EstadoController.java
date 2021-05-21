@@ -7,12 +7,14 @@ import com.betha.manutencao.services.EstadoService;
 import com.betha.manutencao.services.utils.URIBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/estados")
+@PreAuthorize("hasAnyRole('ADMIN')")
 public class EstadoController {
     @Autowired
     private EstadoService estadoService;

@@ -9,6 +9,7 @@ import com.betha.manutencao.services.utils.URIBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -30,6 +31,7 @@ public class OrdemServicoController {
         return ordemService.findOne(id);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'ATENDENTE')")
     @PostMapping
     public ResponseEntity<OrdemServico> add(@RequestBody @Valid OrdemServico ordemServico) {
         OrdemServico ordem = ordemService.add(ordemServico);
@@ -37,16 +39,19 @@ public class OrdemServicoController {
         return ResponseEntity.created(URIBuilder.buildLocation(ordem.getId())).body(ordem);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'ATENDENTE')")
     @PutMapping("/{id}")
     public OrdemServico update(@PathVariable Integer id, @RequestBody @Valid OrdemServico ordemServico) {
         return ordemService.update(id, ordemServico);
     }
 
+    @PreAuthorize("hasAnyRole('TECNICO')")
     @PutMapping("/{id}/status")
     public OrdemServico updateStatus(@PathVariable Integer id, @RequestBody OrdemStatusDTO ordemStatusDTO) {
         return ordemService.updateStatus(id, ordemStatusDTO.getStatusOrdem(), ordemStatusDTO.getObservacoes());
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         ordemService.delete(id);
@@ -59,6 +64,7 @@ public class OrdemServicoController {
         return ordemService.findItens(ordemId);
     }
 
+    @PreAuthorize("hasAnyRole('TECNICO')")
     @PostMapping("{ordemId}/itens/{itemId}/avarias")
     public ResponseEntity<Avaria> addAvaria(@PathVariable Integer ordemId,
                                             @PathVariable Integer itemId, @RequestBody Avaria avaria) {
