@@ -14,7 +14,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/estados")
-@PreAuthorize("hasAnyRole('ADMIN')")
 public class EstadoController {
     @Autowired
     private EstadoService estadoService;
@@ -32,6 +31,7 @@ public class EstadoController {
         return estadoService.findOne(id);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Estado> add(@RequestBody Estado estado) {
         Estado novoEstado = estadoService.add(estado);
@@ -39,11 +39,13 @@ public class EstadoController {
         return ResponseEntity.created(URIBuilder.buildLocation(novoEstado.getId())).body(novoEstado);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PutMapping("/{id}")
     public Estado update(@PathVariable Integer id, @RequestBody Estado estado) {
         return estadoService.update(id, estado);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable(name = "id") Integer estadoId) {
         estadoService.delete(estadoId);
@@ -55,6 +57,7 @@ public class EstadoController {
         return cidadeService.findByEstado(estadoId);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping("/{id}/cidades")
     public ResponseEntity<Cidade> addCidade(@PathVariable(name = "id") Integer estadoId,
                                             @RequestBody Cidade cidade) {

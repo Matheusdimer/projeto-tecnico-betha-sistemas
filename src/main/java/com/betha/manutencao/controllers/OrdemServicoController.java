@@ -45,7 +45,7 @@ public class OrdemServicoController {
         return ordemService.update(id, ordemServico);
     }
 
-    @PreAuthorize("hasAnyRole('TECNICO')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECNICO')")
     @PutMapping("/{id}/status")
     public OrdemServico updateStatus(@PathVariable Integer id, @RequestBody OrdemStatusDTO ordemStatusDTO) {
         return ordemService.updateStatus(id, ordemStatusDTO.getStatusOrdem(), ordemStatusDTO.getObservacoes());
