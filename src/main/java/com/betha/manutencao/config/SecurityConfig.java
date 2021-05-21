@@ -1,6 +1,7 @@
 package com.betha.manutencao.config;
 
 import com.betha.manutencao.security.JWTAuthenticationFilter;
+import com.betha.manutencao.security.JWTAuthorizationFilter;
 import com.betha.manutencao.security.JWTManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -42,6 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll().anyRequest().authenticated();
 
         http.addFilter(new JWTAuthenticationFilter(this.authenticationManager(), this.jwtManager));
+        http.addFilter(new JWTAuthorizationFilter(this.authenticationManager(), jwtManager, userDetailsService));
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 

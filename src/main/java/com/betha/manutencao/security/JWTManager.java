@@ -45,4 +45,13 @@ public class JWTManager {
             return null;
         }
     }
+
+    public String getUsername(String token) {
+        Claims claims = this.getClaims(token);
+
+        if (claims != null) {
+            return claims.getSubject();
+        }
+        return null;
+    }
 }
