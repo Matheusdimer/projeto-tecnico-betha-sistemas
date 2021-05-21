@@ -57,4 +57,15 @@ public class StandardError {
     public void setPath(String path) {
         this.path = path;
     }
+
+    @Override
+    public String toString() {
+        return "{"
+                + "\"timestamp\": " + timestamp + ","
+                + "\"status\": " + status + ","
+                + "\"error\": \"" + error + "\","
+                + "\"message\": \"" + message + "\","
+                + "\"path\": \"" + path + "\""
+                + "}";
+    }
 }
