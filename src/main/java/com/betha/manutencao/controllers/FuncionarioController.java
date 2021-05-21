@@ -1,6 +1,7 @@
 package com.betha.manutencao.controllers;
 
 import com.betha.manutencao.domain.Funcionario;
+import com.betha.manutencao.domain.dto.FuncionarioDTO;
 import com.betha.manutencao.services.FuncionarioService;
 import com.betha.manutencao.services.utils.URIBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/funcionarios")
@@ -18,25 +20,26 @@ public class FuncionarioController {
     private FuncionarioService funcionarioService;
 
     @GetMapping
-    public List<Funcionario> findAll() {
-        return funcionarioService.findAll();
+    public List<FuncionarioDTO> findAll() {
+        return funcionarioService.findAll().stream().map(FuncionarioDTO::new).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public Funcionario findOne(@PathVariable Integer id) {
-        return funcionarioService.findOne(id);
+    public FuncionarioDTO findOne(@PathVariable Integer id) {
+        return new FuncionarioDTO(funcionarioService.findOne(id));
     }
 
     @PostMapping
-    public ResponseEntity<Funcionario> add(@RequestBody Funcionario funcionario) {
+    public ResponseEntity<FuncionarioDTO> add(@RequestBody Funcionario funcionario) {
         Funcionario funcionarioSalvo = funcionarioService.add(funcionario);
 
-        return ResponseEntity.created(URIBuilder.buildLocation(funcionarioSalvo.getId())).body(funcionarioSalvo);
+        return ResponseEntity.created(URIBuilder.buildLocation(funcionarioSalvo.getId()))
+                .body(new FuncionarioDTO(funcionarioSalvo));
     }
 
     @PutMapping("/{id}")
-    public Funcionario update(@PathVariable Integer id, @RequestBody Funcionario funcionario) {
-        return funcionarioService.update(id, funcionario);
+    public FuncionarioDTO update(@PathVariable Integer id, @RequestBody Funcionario funcionario) {
+        return new FuncionarioDTO(funcionarioService.update(id, funcionario));
     }
 
     @DeleteMapping("/{id}")
