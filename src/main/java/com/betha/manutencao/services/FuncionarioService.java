@@ -4,6 +4,7 @@ import com.betha.manutencao.domain.Funcionario;
 import com.betha.manutencao.domain.dto.AlterarSenhaDTO;
 import com.betha.manutencao.domain.enums.TipoFuncionario;
 import com.betha.manutencao.repositories.FuncionarioRepository;
+import com.betha.manutencao.security.User;
 import com.betha.manutencao.services.exceptions.AuthorizationException;
 import com.betha.manutencao.services.exceptions.CredentialsException;
 import com.betha.manutencao.services.exceptions.DataIntegrityException;
@@ -29,6 +30,13 @@ public class FuncionarioService {
     public Funcionario findOne(Integer id) {
         return funcionarioRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Funcionário " + id + " não encontrado"));
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Funcionario getCurrent() {
+        String username = UserService.authenticated();
+
+        return this.findByUsername(username);
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)

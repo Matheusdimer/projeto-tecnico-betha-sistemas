@@ -30,6 +30,12 @@ public class FuncionarioController {
         return new FuncionarioDTO(funcionarioService.findOne(id));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'ATENDENTE', 'TECNICO')")
+    @GetMapping("/current")
+    public FuncionarioDTO getCurrent() {
+        return new FuncionarioDTO(funcionarioService.getCurrent());
+    }
+
     @PostMapping
     public ResponseEntity<FuncionarioDTO> add(@RequestBody Funcionario funcionario) {
         Funcionario funcionarioSalvo = funcionarioService.add(funcionario);

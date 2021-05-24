@@ -1,7 +1,6 @@
 package com.betha.manutencao.domain;
 
 import com.betha.manutencao.domain.enums.StatusOrdem;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
