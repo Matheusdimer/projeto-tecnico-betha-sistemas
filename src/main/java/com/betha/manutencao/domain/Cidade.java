@@ -17,7 +17,6 @@ public class Cidade {
 
     @ManyToOne
     @JoinColumn(name = "estado_id")
-    @JsonBackReference
     private Estado estado;
 
     public Cidade() {

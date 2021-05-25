@@ -1,5 +1,6 @@
 package com.betha.manutencao.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.validator.constraints.Length;
 
@@ -22,7 +23,7 @@ public class Estado {
     private String nome;
 
     @OneToMany(mappedBy = "estado")
-    @JsonManagedReference
+    @JsonIgnore
     private List<Cidade> cidades = new ArrayList<>();
 
 
