@@ -1,5 +1,6 @@
 package com.betha.manutencao.domain.dto;
 
+import com.betha.manutencao.domain.enums.TipoCliente;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
@@ -19,7 +20,7 @@ public class ClienteDTO {
     private String email;
 
     @NotNull
-    private Integer tipoCliente;
+    private TipoCliente tipoCliente;
 
     @NotEmpty
     private String cpf_cnpj;
@@ -43,7 +44,7 @@ public class ClienteDTO {
     public ClienteDTO() {
     }
 
-    public ClienteDTO(String nome, String email, Integer tipoCliente, String cpf_cnpj, Set<String> telefones,
+    public ClienteDTO(String nome, String email, TipoCliente tipoCliente, String cpf_cnpj, Set<String> telefones,
                       String endereco, String numero, String complemento, String bairro, String cep,
                       Integer cidadeId) {
         this.nome = nome;
@@ -75,11 +76,11 @@ public class ClienteDTO {
         this.email = email;
     }
 
-    public Integer getTipoCliente() {
+    public TipoCliente getTipoCliente() {
         return tipoCliente;
     }
 
-    public void setTipoCliente(Integer tipoCliente) {
+    public void setTipoCliente(TipoCliente tipoCliente) {
         this.tipoCliente = tipoCliente;
     }
 

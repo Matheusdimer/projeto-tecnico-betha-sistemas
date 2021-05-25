@@ -97,7 +97,7 @@ public class ClienteService {
         Cliente cliente = new Cliente();
         endereco.setCliente(cliente);
 
-        cliente.setTipoCliente(TipoCliente.toEnum(clienteDTO.getTipoCliente()));
+        cliente.setTipoCliente(clienteDTO.getTipoCliente());
         cliente.setNome(clienteDTO.getNome());
         cliente.setCpf_cnpj(clienteDTO.getCpf_cnpj());
         cliente.setEmail(clienteDTO.getEmail());
