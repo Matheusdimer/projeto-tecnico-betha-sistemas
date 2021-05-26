@@ -75,6 +75,7 @@ public class OrdemServicoService {
             item.setOrdem(ordemServico);
 
             equipamento.getItensOrdem().add(item);
+            itemRepository.save(item);
         }
 
         OrdemServico ordemSalva = ordemRepository.save(ordemServico);
